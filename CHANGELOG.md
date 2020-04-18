@@ -1,11 +1,6 @@
 
-<a name="0.3.16"></a>
-## [0.3.16](https://github.com/ajdnik/decrypo/compare/0.3.3...0.3.16) (2020-04-18)
-
-### Chore
-
-* version bumped
-* updated changelog
+<a name="0.3.17"></a>
+## [0.3.17](https://github.com/ajdnik/decrypo/compare/0.3.3...0.3.17) (2020-04-18)
 
 ### Feat
 
@@ -13,7 +8,6 @@
 
 ### Fix
 
-* go get go-sqlite3
 * 32bit compilation
 
 
