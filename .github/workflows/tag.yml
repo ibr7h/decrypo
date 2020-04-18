@@ -13,30 +13,30 @@ jobs:
       steps:
         - name: Install 32bit dependencies
           run: |
+            choco install golang -y
             choco install mingw -y --force --x86
             $path = where.exe mingw32-make.exe | Get-Item
             Copy-Item -Path $path -Destination (Join-Path $path.Directory 'make.exe')
           shell: powershell
-        - name: Setup Go 1.13
-          uses: actions/setup-go@v1
-          with:
-            go-version: 1.13
-          env:
-            GOPATH: ${{ runner.workspace }}
-            GOBIN: ${{ runner.workspace }}/bin
         - name: Setup Go Environment
           run: |
             mkdir -p $GOPATH/bin
             mkdir -p $GOPATH/src
             mkdir -p $GOPATH/pkg
           shell: bash
+          env:
+            GOPATH: ${{ runner.workspace }}
         - name: Get sqlite3
           run: |
             which gcc
             gcc -v
+            which g++
+            g++ -v
             go env
             go get github.com/mattn/go-sqlite3
           shell: bash
           env:
+            GOPATH: ${{ runner.workspace }}
+            GOBIN: ${{ runner.workspace }}/bin
             GOARCH: 386
             CGO_ENABLED: 1
