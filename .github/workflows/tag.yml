@@ -33,7 +33,7 @@ jobs:
             which g++
             g++ -v
             go env
-            go get github.com/mattn/go-sqlite3
+            go get -x github.com/mattn/go-sqlite3
           shell: bash
           env:
             GOPATH: ${{ runner.workspace }}
