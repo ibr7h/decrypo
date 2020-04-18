@@ -4,30 +4,36 @@ on:
     branches:
       - 32bit
 jobs:
-  xgo:
-    strategy:
-      matrix:
-        go_version:
-          - 1.13.x
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v1
-      -
-        name: Build with xgo
-        uses: crazy-max/ghaction-xgo@v1
-        with:
-          xgo_version: latest
-          go_version: ${{ matrix.go_version }}
-          dest: build
-          prefix: decrypo
-          targets: windows/386
-          v: true
-          x: false
-          ldflags: -s -w
-      - 
-        name: Upload Artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          path: build
+  build_artifacts:
+      strategy:
+        matrix:
+          os: [windows-latest]
+      runs-on: ${{ matrix.os }}
+      name: build-artifacts-${{ matrix.os }}
+      steps:
+        - name: Install 32bit dependencies
+          run: |
+            choco install mingw -y --force --x86
+            $path = where.exe mingw32-make.exe | Get-Item
+            Copy-Item -Path $path -Destination (Join-Path $path.Directory 'make.exe')
+          shell: powershell
+        - name: Setup Go 1.13
+          uses: actions/setup-go@v1
+          with:
+            go-version: 1.13
+          env:
+            GOPATH: ${{ runner.workspace }}
+            GOBIN: ${{ runner.workspace }}/bin
+        - name: Setup Go Environment
+          run: |
+            mkdir -p $GOPATH/bin
+          shell: bash
+        - name: Get sqlite3
+          run: |
+            which gcc
+            go env
+            go get -x github.com/mattn/go-sqlite3
+          shell: bash
+          env:
+            GOARCH: 386
+            CGO_ENABLED: 1
