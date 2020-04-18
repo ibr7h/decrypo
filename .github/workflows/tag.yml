@@ -28,14 +28,8 @@ jobs:
             GOPATH: ${{ runner.workspace }}
         - name: Get sqlite3
           run: |
-            which gcc
-            gcc -v
-            which g++
-            g++ -v
-            which cc1
-            cc1 -v
-            go env
-            go get -x github.com/mattn/go-sqlite3
+            go get -u github.com/mattn/go-sqlite3
+            go install github.com/mattn/go-sqlite3
           shell: bash
           env:
             GOPATH: ${{ runner.workspace }}
