@@ -1,109 +1,6 @@
 
-<a name="0.3.14"></a>
-## [0.3.14](https://github.com/ajdnik/decrypo/compare/0.3.13...0.3.14) (2020-04-18)
-
-### Chore
-
-* skip macos while testing
-
-
-<a name="0.3.13"></a>
-## [0.3.13](https://github.com/ajdnik/decrypo/compare/0.3.12...0.3.13) (2020-04-18)
-
-### Chore
-
-* version bumped
-* updated changelog
-* switch platform order
-
-
-<a name="0.3.12"></a>
-## [0.3.12](https://github.com/ajdnik/decrypo/compare/0.3.11...0.3.12) (2020-04-18)
-
-### Chore
-
-* version bumped
-* updated changelog
-* really desperate
-
-
-<a name="0.3.11"></a>
-## [0.3.11](https://github.com/ajdnik/decrypo/compare/0.3.10...0.3.11) (2020-04-18)
-
-### Chore
-
-* version bumped
-* updated changelog
-* grasping at straws
-
-
-<a name="0.3.10"></a>
-## [0.3.10](https://github.com/ajdnik/decrypo/compare/0.3.9...0.3.10) (2020-04-17)
-
-### Chore
-
-* version bumped
-* updated changelog
-* gcc version printout
-
-
-<a name="0.3.9"></a>
-## [0.3.9](https://github.com/ajdnik/decrypo/compare/0.3.8...0.3.9) (2020-04-17)
-
-### Chore
-
-* version bumped
-* updated changelog
-* go environment printout
-
-
-<a name="0.3.8"></a>
-## [0.3.8](https://github.com/ajdnik/decrypo/compare/0.3.7...0.3.8) (2020-04-17)
-
-### Chore
-
-* version bumped
-* updated changelog
-* debug github actions
-
-
-<a name="0.3.7"></a>
-## [0.3.7](https://github.com/ajdnik/decrypo/compare/0.3.6...0.3.7) (2020-04-17)
-
-### Chore
-
-* version bumped
-* updated changelog
-
-### Fix
-
-* install 32bit mingw
-
-
-<a name="0.3.6"></a>
-## [0.3.6](https://github.com/ajdnik/decrypo/compare/0.3.5...0.3.6) (2020-04-17)
-
-### Chore
-
-* version bumped
-* updated changelog
-
-### Fix
-
-* missing GOARCH variable
-
-
-<a name="0.3.5"></a>
-## [0.3.5](https://github.com/ajdnik/decrypo/compare/0.3.4...0.3.5) (2020-04-17)
-
-### Chore
-
-* version bumped
-* updated changelog
-
-
-<a name="0.3.4"></a>
-## [0.3.4](https://github.com/ajdnik/decrypo/compare/0.3.3...0.3.4) (2020-04-17)
+<a name="0.3.16"></a>
+## [0.3.16](https://github.com/ajdnik/decrypo/compare/0.3.3...0.3.16) (2020-04-18)
 
 ### Chore
 
@@ -112,6 +9,11 @@
 
 ### Feat
 
+* 32bit compilation
+
+### Fix
+
+* go get go-sqlite3
 * 32bit compilation
 
 

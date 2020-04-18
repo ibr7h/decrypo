@@ -7,17 +7,10 @@ jobs:
   build_artifacts:
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     name: build-artifacts-${{ matrix.os }}
     steps:
-      - name: Install 32bit dependencies
-        run: |
-          choco install mingw -y --force --x86
-          $path = where.exe mingw32-make.exe | Get-Item
-          Copy-Item -Path $path -Destination (Join-Path $path.Directory 'make.exe')
-        shell: powershell
-        if: runner.os == 'Windows'
       - name: Setup Go 1.13
         uses: actions/setup-go@v1
         with:
@@ -32,6 +25,13 @@ jobs:
       - name: Setup Go Environment
         run: |
           mkdir -p $GOPATH/bin
+          mkdir -p $GOPATH/src
+          mkdir -p $GOPATH/pkg
+        shell: bash
+      - name: Install go-sqlite3
+        run: |
+          go get -u github.com/mattn/go-sqlite3
+          CGO_ENABLED=1 go install github.com/mattn/go-sqlite3
         shell: bash
       - name: Get Dependencies
         run: |
@@ -50,13 +50,12 @@ jobs:
           export TIME=`date +%FT%T%z`
           export NAME=$(echo "${OS}_${ARCH}" | tr '[:upper:]' '[:lower:]')
           mkdir -p "dist/${NAME}"
-          CGO_ENABLED=1 go build -ldflags "-s -w -X github.com/ajdnik/decrypo/build.Version=${TAG} -X github.com/ajdnik/decrypo/build.Datetime=${TIME}" -o "dist/${NAME}/decrypo"
+          CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/ajdnik/decrypo/build.Version=${TAG} -X github.com/ajdnik/decrypo/build.Datetime=${TIME}" -o "dist/${NAME}/decrypo"
         shell: bash
         env:
           TAG: ${{ github.ref }}
           OS: ${{ runner.os }}
           ARCH: amd64
-          GOARCH: 386
       - name: Archive Artifacts
         run: |
           cd $GOPATH/src/github.com/$GITHUB_REPOSITORY
@@ -83,42 +82,34 @@ jobs:
         env:
           OS: ${{ runner.os }}
           ARCH: amd64
-      # - name: Install 32bit dependencies
-        # run: |
-          # Import-Module -Name ImageHelpers -Force
-          # choco install mingw -y --force --x86
-          # $path = where.exe mingw32-make.exe | Get-Item
-          # Copy-Item -Path $path -Destination (Join-Path $path.Directory 'make.exe')
-        # shell: powershell
-        # if: runner.os == 'Windows'
-      # - name: Build 32bit Artifacts
-        # run: |
-          # cd $GOPATH/src/github.com/$GITHUB_REPOSITORY
-          # export TIME=`date +%FT%T%z`
-          # export NAME=$(echo "${OS}_${ARCH}" | tr '[:upper:]' '[:lower:]')
-          # mkdir -p "dist/${NAME}"
-          # CGO_ENABLED=1 go build -ldflags "-s -w -X github.com/ajdnik/decrypo/build.Version=${TAG} -X github.com/ajdnik/decrypo/build.Datetime=${TIME}" -o "dist/${NAME}/decrypo"
-        # shell: bash
-        # if: runner.os == 'Windows'
-        # env:
-          # TAG: ${{ github.ref }}
-          # OS: ${{ runner.os }}
-          # ARCH: x86
-          # GOARCH: 386
-      # - name: Archive 32bit Artifacts
-        # run: |
-          # Set-Location "$($Env:GOPATH)/src/github.com/$($Env:GITHUB_REPOSITORY)"
-          # $Name = "$($Env:OS)_$($Env:ARCH)".ToLower()
-          # Rename-Item -Path "dist/$($Name)/decrypo" -NewName "decrypo.exe"
-          # Add-Type -assembly "system.io.compression.filesystem"
-          # [io.compression.zipfile]::CreateFromDirectory("dist/$($Name)", "dist/$($Name).zip")
-          # Get-FileHash "dist/$($Name).zip" -Algorithm SHA256 | Export-Clixml -Path "dist/$($Name).sha256"
-          # Remove-Item -Path "dist/$($Name)" -Recurse
-        # shell: powershell
-        # if: runner.os == 'Windows'
-        # env:
-          # OS: ${{ runner.os }}
-          # ARCH: x86
+      - name: Build 32bit Artifacts
+        run: |
+          cd $GOPATH/src/github.com/$GITHUB_REPOSITORY
+          export TIME=`date +%FT%T%z`
+          export NAME=$(echo "${OS}_${ARCH}" | tr '[:upper:]' '[:lower:]')
+          mkdir -p "dist/${NAME}"
+          CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/ajdnik/decrypo/build.Version=${TAG} -X github.com/ajdnik/decrypo/build.Datetime=${TIME}" -o "dist/${NAME}/decrypo"
+        shell: bash
+        if: runner.os == 'Windows'
+        env:
+          TAG: ${{ github.ref }}
+          OS: ${{ runner.os }}
+          ARCH: x86
+          GOARCH: 386
+      - name: Archive 32bit Artifacts
+        run: |
+          Set-Location "$($Env:GOPATH)/src/github.com/$($Env:GITHUB_REPOSITORY)"
+          $Name = "$($Env:OS)_$($Env:ARCH)".ToLower()
+          Rename-Item -Path "dist/$($Name)/decrypo" -NewName "decrypo.exe"
+          Add-Type -assembly "system.io.compression.filesystem"
+          [io.compression.zipfile]::CreateFromDirectory("dist/$($Name)", "dist/$($Name).zip")
+          Get-FileHash "dist/$($Name).zip" -Algorithm SHA256 | Export-Clixml -Path "dist/$($Name).sha256"
+          Remove-Item -Path "dist/$($Name)" -Recurse
+        shell: powershell
+        if: runner.os == 'Windows'
+        env:
+          OS: ${{ runner.os }}
+          ARCH: x86
       - name: Upload Artifacts
         uses: actions/upload-artifact@v1
         with:
@@ -171,8 +162,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: Windows/windows_386.zip
-          asset_name: windows_386.zip
+          asset_path: Windows/windows_x86.zip
+          asset_name: windows_x86.zip
           asset_content_type: application/zip
       - name: Upload Windows 32bit Binary SHA Sum
         uses: actions/upload-release-asset@v1.0.1
@@ -180,8 +171,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: Windows/windows_386.sha256
-          asset_name: windows_386.sha256
+          asset_path: Windows/windows_x86.sha256
+          asset_name: windows_x86.sha256
           asset_content_type: application/xml
       - name: Upload macOS Binary
         uses: actions/upload-release-asset@v1.0.1
