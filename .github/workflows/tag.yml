@@ -27,12 +27,15 @@ jobs:
         - name: Setup Go Environment
           run: |
             mkdir -p $GOPATH/bin
+            mkdir -p $GOPATH/src
+            mkdir -p $GOPATH/pkg
           shell: bash
         - name: Get sqlite3
           run: |
             which gcc
+            gcc -v
             go env
-            go get -x github.com/mattn/go-sqlite3
+            go get github.com/mattn/go-sqlite3
           shell: bash
           env:
             GOARCH: 386
