@@ -1,5 +1,5 @@
 GITHUB_REPO="ajdnik/decrypo"
-VERSION="0.3.16"
+VERSION="0.3.17"
 
 changelog:
 	git-chglog -c .chglog/changelog/config.yml -o CHANGELOG.md --next-tag ${VERSION} ..${VERSION}
