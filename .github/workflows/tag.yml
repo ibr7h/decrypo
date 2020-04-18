@@ -32,6 +32,8 @@ jobs:
             gcc -v
             which g++
             g++ -v
+            which cc1
+            cc1 -v
             go env
             go get -x github.com/mattn/go-sqlite3
           shell: bash
